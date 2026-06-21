@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPM Chatbot Control Panel</title>
+    <!-- Google Fonts: Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local Premium Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="fa-solid fa-robot logo-icon animate-pulse"></i>
+                <div class="brand-text">
+                    <h1>GPM Bot</h1>
+                    <span>v1.0.0</span>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+                    <i class="fa-solid fa-chart-line"></i> Bảng điều khiển
+                </a>
+                <a href="#settings" class="nav-item" data-tab="settings">
+                    <i class="fa-solid fa-sliders"></i> Cấu hình hệ thống
+                </a>
+                <a href="#whitelist" class="nav-item" data-tab="whitelist">
+                    <i class="fa-solid fa-user-shield"></i> Quản lý Whitelist
+                </a>
+                <a href="#history" class="nav-item" data-tab="history">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Lịch sử trả lời
+                </a>
+            </nav>
+            <div class="sidebar-status">
+                <span class="status-label">Trạng thái:</span>
+                <span id="bot-badge" class="badge status-stopped">
+                    <span class="dot"></span> Đang Dừng
+                </span>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            
+            <!-- Tab: Dashboard -->
+            <section id="tab-dashboard" class="tab-pane active">
+                <header class="header">
+                    <h2>Bảng điều khiển chính</h2>
+                    <p>Theo dõi trạng thái hoạt động và điều khiển chatbot Messenger.</p>
+                </header>
+
+                <div class="grid-layout">
+                    <!-- Control Panel Card -->
+                    <div class="card status-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-play-pause"></i> Trình điều khiển</h3>
+                        </div>
+                        <div class="control-actions">
+                            <button id="btn-start" class="btn btn-emerald btn-lg">
+                                <i class="fa-solid fa-circle-play"></i> BẮT ĐẦU BOT
+                            </button>
+                            <button id="btn-stop" class="btn btn-rose btn-lg" disabled>
+                                <i class="fa-solid fa-circle-stop"></i> DỪNG HOẠT ĐỘNG
+                            </button>
+                        </div>
+                        <div class="quick-info">
+                            <div class="info-item">
+                                <span class="label">Tiến trình GPM Profile ID:</span>
+                                <span id="info-profile" class="value">Chưa kết nối</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="label">Model Đang Sử Dụng:</span>
+                                <span id="info-model" class="value">openai/mimo-v2.5-pro</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Console Logs Card -->
+                    <div class="card console-card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-terminal"></i> Nhật ký hoạt động (Logs)</h3>
+                            <button id="btn-clear-console" class="btn btn-link btn-sm">Xoá màn hình</button>
+                        </div>
+                        <div class="console-wrapper">
+                            <pre id="console-output">Chưa có nhật ký hoạt động nào...</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Settings -->
+            <section id="tab-settings" class="tab-pane">
+                <header class="header">
+                    <h2>Cấu hình hệ thống</h2>
+                    <p>Quản lý API key, thông tin GPM và các tùy chọn hành vi con người.</p>
+                </header>
+
+                <form id="settings-form" class="settings-form">
+                    <div class="grid-2-col">
+                        <!-- Left Block: API keys & settings -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-key"></i> API AI Keys & Endpoints</h3>
+                            </div>
+                            <div class="form-group">
+                                <label for="key-gemini">Google Gemini API Key</label>
+                                <input type="password" id="key-gemini" name="GEMINI_API_KEY" placeholder="AIzaSy...">
+                            </div>
+                            <div class="form-group">
+                                <label for="key-mimo">XiaomiMiMo API Key</label>
+                                <input type="password" id="key-mimo" name="XIAOMIMIMO_API_KEY" placeholder="tp-skrnl...">
+                            </div>
+                            <div class="form-group">
+                                <label for="base-mimo">XiaomiMiMo API Base URL</label>
+                                <input type="text" id="base-mimo" name="XIAOMIMIMO_API_BASE" placeholder="https://token-plan-sgp.xiaomimimo.com/v1">
+                            </div>
+                            <div class="form-group">
+                                <label for="key-openai">OpenAI API Key (Dự phòng)</label>
+                                <input type="password" id="key-openai" name="OPENAI_API_KEY" placeholder="sk-...">
+                            </div>
+                            <div class="form-group">
+                                <label for="key-deepseek">DeepSeek API Key (Dự phòng)</label>
+                                <input type="password" id="key-deepseek" name="DEEPSEEK_API_KEY" placeholder="sk-...">
+                            </div>
+                        </div>
+
+                        <!-- Right Block: GPM Connection & Behavior -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fa-solid fa-gears"></i> Cấu hình kết nối GPM & AI</h3>
+                            </div>
+                            <div class="form-group">
+                                <label for="gpm-mode">Chế độ kết nối</label>
+                                <select id="gpm-mode" name="connection.mode">
+                                    <option value="gpm_api">Qua API GPM Login (Được khuyến nghị cho GPM)</option>
+                                    <option value="direct_cdp">Debug CDP trực tiếp (Sử dụng với Chrome thường)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gpm-url">GPM Local API URL</label>
+                                <input type="text" id="gpm-url" name="GPM_API_URL" placeholder="http://127.0.0.1:9495">
+                            </div>
+                            <div class="form-group">
+                                <label for="gpm-profile-id">GPM Profile ID</label>
+                                <input type="text" id="gpm-profile-id" name="GPM_PROFILE_ID" placeholder="e2a4500f-abd3-...">
+                            </div>
+                            <div class="form-group">
+                                <label for="gpm-debug-port">Cổng Chrome Debug (Chỉ dùng khi debug trực tiếp)</label>
+                                <input type="number" id="gpm-debug-port" name="GPM_DEBUG_PORT" placeholder="9222">
+                            </div>
+                            <div class="form-group">
+                                <label for="llm-model">Model AI Mặc Định</label>
+                                <input type="text" id="llm-model" name="llm.default_model" placeholder="openai/mimo-v2.5-pro">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Behavior settings Card -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-user-clock"></i> Hành vi phản hồi (Human-like delays)</h3>
+                        </div>
+                        <div class="grid-4-col">
+                            <div class="form-group">
+                                <label for="delay-min">Thời gian chờ nghĩ Min (giây)</label>
+                                <input type="number" step="0.1" id="delay-min" name="human_like.min_delay" placeholder="2.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="delay-max">Thời gian chờ nghĩ Max (giây)</label>
+                                <input type="number" step="0.1" id="delay-max" name="human_like.max_delay" placeholder="5.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="typing-speed">Tốc độ gõ phím (WPM)</label>
+                                <input type="number" id="typing-speed" name="human_like.typing_speed_wpm" placeholder="80">
+                            </div>
+                            <div class="form-group">
+                                <label for="debounce-time">Chờ đối phương nhắn xong (giây)</label>
+                                <input type="number" step="0.5" id="debounce-time" name="chatbot.wait_for_user_finish_seconds" placeholder="10.0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="system-prompt">System Prompt (Tính cách & Chỉ dẫn cho Bot)</label>
+                            <textarea id="system-prompt" name="llm.system_prompt" rows="5" placeholder="Nhập chỉ dẫn tại đây..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" id="btn-save-settings" class="btn btn-indigo btn-lg">
+                            <i class="fa-solid fa-floppy-disk"></i> LƯU CẤU HÌNH
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Tab: Whitelist -->
+            <section id="tab-whitelist" class="tab-pane">
+                <header class="header">
+                    <h2>Quản lý Whitelist</h2>
+                    <p>Chỉ những cuộc hội thoại nằm trong whitelist mới được bot phản hồi (trừ khi bật chế độ Cho phép tất cả).</p>
+                </header>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-shield-halved"></i> Chế độ bộ lọc</h3>
+                    </div>
+                    <div class="allow-all-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="whitelist-allow-all">
+                            <span class="slider"></span>
+                        </label>
+                        <div class="toggle-info">
+                            <h4>Cho phép trả lời tất cả mọi người (Allow All)</h4>
+                            <p>Nếu BẬT, bot sẽ tự động trả lời bất cứ ai nhắn tin đến. Nếu TẮT, bot chỉ trả lời những người có tên hoặc ID trong danh sách bên dưới.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2-col mt-4">
+                    <!-- Whitelist Names Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-user-tag"></i> Danh sách Tên hiển thị (allowed_names)</h3>
+                        </div>
+                        <div class="input-add-group">
+                            <input type="text" id="add-name-input" placeholder="Ví dụ: Nguyễn Văn A">
+                            <button id="btn-add-name" class="btn btn-indigo">Thêm</button>
+                        </div>
+                        <div class="list-container">
+                            <ul id="list-names" class="whitelist-items">
+                                <!-- JS injected -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Whitelist Threads ID Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-hashtag"></i> Danh sách ID Luồng chat (allowed_threads)</h3>
+                        </div>
+                        <div class="input-add-group">
+                            <input type="text" id="add-thread-input" placeholder="Ví dụ: 10001234567890">
+                            <button id="btn-add-thread" class="btn btn-indigo">Thêm</button>
+                        </div>
+                        <div class="list-container">
+                            <ul id="list-threads" class="whitelist-items">
+                                <!-- JS injected -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: History -->
+            <section id="tab-history" class="tab-pane">
+                <header class="header">
+                    <h2>Lịch sử tin nhắn đã gửi</h2>
+                    <p>Hiển thị các câu trả lời mà bot đã tự động gửi đi trong phiên chạy hiện tại.</p>
+                </header>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-comments"></i> Lịch sử phản hồi</h3>
+                        <button id="btn-refresh-history" class="btn btn-link btn-sm"><i class="fa-solid fa-arrows-rotate"></i> Làm mới</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="premium-table">
+                            <thead>
+                                <tr>
+                                    <th>Thời gian</th>
+                                    <th>Người nhận</th>
+                                    <th>Nội dung câu trả lời</th>
+                                    <th>Model sử dụng</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body">
+                                <tr>
+                                    <td colspan="4" class="text-center">Đang tải dữ liệu lịch sử hoặc chưa có câu trả lời nào được gửi đi...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-message">Thông báo ở đây</span>
+    </div>
+
+    <!-- Load Frontend Logic -->
+    <script src="/static/app.js"></script>
+</body>
+</html>

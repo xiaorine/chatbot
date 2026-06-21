@@ -1,0 +1,24 @@
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Credentials
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+*.log
+config/sent_messages.json
+
+# Local IDE files
+.vscode/
+.idea/
+
+# Screenshots / Test assets
+test/*.png

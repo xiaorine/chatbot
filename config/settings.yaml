@@ -1,0 +1,31 @@
+# Connection configuration
+connection:
+  mode: "gpm_api" # Options: "direct_cdp" (use GPM_DEBUG_PORT) or "gpm_api" (use GPM_API_URL/GPM_PROFILE_ID)
+  default_port: 9222
+
+# LLM Orchestration
+llm:
+  default_model: "openai/mimo-v2.5-pro"
+  fallbacks:
+    - "gemini/gemini-2.5-flash"
+    - "openai/gpt-4o-mini"
+    - "deepseek/deepseek-chat"
+  
+  system_prompt: |
+    Bạn là một trợ lý cá nhân thân thiện, thông minh và vui vẻ. 
+    Hãy trả lời một cách tự nhiên, giống như một người bạn đang nhắn tin trực tiếp.
+    Dùng ngôn ngữ tự nhiên, đôi khi viết tắt nhẹ (vd: ko, dc, bận) nếu phù hợp ngữ cảnh, nhưng vẫn lịch sự.
+    Trả lời ngắn gọn, tránh dài dòng.
+
+# Human-like interaction
+human_like:
+  min_delay: 2.0         # Minimum delay in seconds before starting to type
+  max_delay: 5.0         # Maximum delay in seconds before starting to type
+  typing_speed_wpm: 80   # Words per minute to calculate dynamic typing delay
+  simulate_mouse: true
+
+# Chatbot settings
+chatbot:
+  poll_interval: 2.0      # Seconds between scans for new messages
+  context_history_limit: 10 # Number of recent messages to send to the LLM
+  wait_for_user_finish_seconds: 10.0 # Wait time to ensure user finished consecutive messages
